@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/style.css" />
+    <title>Share Your Thoughts</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Share Your Thoughts</h1>
+      <form action="/submit" method="post">
+        <textarea
+          name="text"
+          placeholder="Write your thought here..."
+          required
+        ></textarea>
+        <button type="submit">Submit</button>
+      </form>
+      <h2>Incognito Thoughts</h2>
+      <ul>
+        {{range .}}
+        <li>{{.Text}}</li>
+        {{end}}
+      </ul>
+    </div>
+  </body>
+</html>
