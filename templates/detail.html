@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap"
+      rel="stylesheet"
+    />
+    <meta charset="UTF-8" />
+    <title>Thought Details</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body class="container">
+    <h1>Incognito Thoughts</h1>
+    <a href="/">Back to Home</a>
+
+    <p>{{.Thought.Text}}</p>
+
+    <div>
+      <form action="/thought/{{.Thought.ID}}/comment" method="post">
+        <textarea
+          name="text"
+          rows="4"
+          cols="50"
+          placeholder="Write your comment here..."
+          required
+        ></textarea
+        ><br />
+        <button type="submit">Submit Comment</button>
+      </form>
+    </div>
+
+    <div>
+      <ul>
+        {{range .Comments}}
+        <li>
+          <p>{{.Text}}</p>
+        </li>
+        {{else}}
+        <li>No comments yet.</li>
+        {{end}}
+      </ul>
+    </div>
+  </body>
+</html>

@@ -1,47 +1,56 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+html {
+  font-family: "Roboto Mono", monospace;
+  font-optical-sizing: auto;
 }
 
 .container {
-    max-width: 800px;
-    width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-h1, h2 {
-    color: #333;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 5px;
 }
 
 form {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 textarea {
-    width: 100%;
-    height: 100px;
-    padding: 10px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
 }
 
 button {
-    padding: 10px 20px;
+  padding: 10px 20px;
+  cursor: pointer;
 }
 
 ul {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 li {
-    background: #f4f4f4;
-    margin: 5px 0;
-    padding: 10px;
-    border-radius: 5px;
+  margin: 5px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.thought-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px 0;
+}
+
+.thought a {
+  text-decoration: none;
+  color: black;
+}
+
+.thought a:visited {
+  color: purple;
+}
+
+.thought a:hover {
+  text-decoration: underline;
 }

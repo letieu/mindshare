@@ -1,28 +1,35 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="/static/style.css" />
-    <title>Share Your Thoughts</title>
+    <meta charset="UTF-8" />
+    <title>Thoughts</title>
   </head>
-  <body>
-    <div class="container">
-      <h1>Share Your Thoughts</h1>
-      <form action="/submit" method="post">
-        <textarea
-          name="text"
-          placeholder="Write your thought here..."
-          required
-        ></textarea>
-        <button type="submit">Submit</button>
-      </form>
-      <h2>Incognito Thoughts</h2>
-      <ul>
-        {{range .}}
-        <li>{{.Text}}</li>
-        {{end}}
-      </ul>
-    </div>
+  <body class="container">
+    <h1>Incognito Thoughts</h1>
+    <form action="/submit" method="post">
+      <textarea
+        name="text"
+        placeholder="Share your anonymous thoughts or questions here..."
+        required
+      ></textarea>
+      <button type="submit">Submit Thought</button>
+    </form>
+    <ul>
+      {{range .}}
+      <li class="thought">
+        <a href="/thought/{{.ID}}">
+          <p>{{.Text}}</p>
+        </a>
+      </li>
+      {{end}}
+    </ul>
   </body>
 </html>
