@@ -13,35 +13,44 @@
     <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body class="container">
-    <h1>Incognito Thoughts</h1>
-    <a href="/">Back to Home</a>
+    <header class="header">
+      <h2>Mindshare.lol</h2>
+      <a href="https://github.com/letieu/mindshare" target="_blank">
+        <img
+          width="30"
+          height="30"
+          src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png"
+          alt="github"
+        />
+      </a>
+    </header>
 
-    <p>{{.Thought.Text}}</p>
+    <main>
+      <div>
+        <form action="/thought/{{.Thought.ID}}/comment" method="post">
+          <textarea
+            name="text"
+            rows="4"
+            cols="50"
+            placeholder="Write your comment here..."
+            required
+          ></textarea
+          ><br />
+          <button type="submit">Submit Comment</button>
+        </form>
+      </div>
 
-    <div>
-      <form action="/thought/{{.Thought.ID}}/comment" method="post">
-        <textarea
-          name="text"
-          rows="4"
-          cols="50"
-          placeholder="Write your comment here..."
-          required
-        ></textarea
-        ><br />
-        <button type="submit">Submit Comment</button>
-      </form>
-    </div>
-
-    <div>
-      <ul>
-        {{range .Comments}}
-        <li>
-          <p>{{.Text}}</p>
-        </li>
-        {{else}}
-        <li>No comments yet.</li>
-        {{end}}
-      </ul>
-    </div>
+      <div>
+        <ul>
+          {{range .Comments}}
+          <li>
+            <p>{{.Text}}</p>
+          </li>
+          {{else}}
+          <li>No comments yet.</li>
+          {{end}}
+        </ul>
+      </div>
+    </main>
   </body>
 </html>

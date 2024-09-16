@@ -9,6 +9,13 @@ html {
   padding: 5px;
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 form {
   margin-bottom: 20px;
 }
