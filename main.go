@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -149,6 +150,7 @@ func commentHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     text := r.FormValue("text")
+    text = strings.TrimSpace(text)
     if text == "" {
         http.Redirect(w, r, fmt.Sprintf("/thought/%s", vars["id"]), http.StatusSeeOther)
         return
@@ -170,6 +172,7 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	text := r.FormValue("text")
+    text = strings.TrimSpace(text)
 	if text == "" {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
