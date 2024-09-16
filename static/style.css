@@ -16,6 +16,10 @@ html {
   margin-bottom: 20px;
 }
 
+p {
+  overflow: auto;
+}
+
 form {
   margin-bottom: 20px;
 }
@@ -42,6 +46,7 @@ li {
   overflow: auto;
   margin: 5px 0;
   border-bottom: 1px solid #ccc;
+  max-height: 100px;
 }
 
 .thought-footer {
