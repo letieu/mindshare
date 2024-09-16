@@ -16,24 +16,35 @@ html {
   margin-bottom: 20px;
 }
 
+.header nav {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+#theme {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
 p {
   overflow: auto;
 }
 
 form {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 textarea {
   width: 100%;
   height: 100px;
   padding: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   box-sizing: border-box;
 }
 
 button {
-  padding: 10px 20px;
+  padding: 12px 24px;
   cursor: pointer;
 }
 
@@ -44,7 +55,7 @@ ul {
 
 li {
   overflow: auto;
-  margin: 5px 0;
+  margin: 4px 0;
   border-bottom: 1px solid #ccc;
   max-height: 100px;
 }
@@ -52,7 +63,7 @@ li {
 .thought-footer {
   display: flex;
   justify-content: flex-end;
-  padding: 5px 0;
+  padding: 4px 0;
 }
 
 .thought a {
@@ -66,4 +77,35 @@ li {
 
 .thought a:hover {
   text-decoration: underline;
+}
+
+/* Dark Theme Styles */
+body.dark-theme {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+body.dark-theme .container {
+  background-color: #1e1e1e;
+}
+
+body.dark-theme .header {
+  border-bottom: 1px solid #333;
+}
+
+body.dark-theme button {
+  background-color: #333;
+  color: #fff;
+}
+
+body.dark-theme li {
+  border-bottom: 1px solid #444;
+}
+
+body.dark-theme .thought a {
+  color: #bbb;
+}
+
+body.dark-theme .thought a:visited {
+  color: #888;
 }
