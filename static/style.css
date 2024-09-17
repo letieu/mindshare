@@ -109,3 +109,9 @@ body.dark-theme .thought a {
 body.dark-theme .thought a:visited {
   color: #888;
 }
+
+#detail-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
