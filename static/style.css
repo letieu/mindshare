@@ -115,3 +115,7 @@ body.dark-theme .thought a:visited {
   justify-content: space-between;
   align-items: center;
 }
+
+body > main {
+  padding-bottom: 50px;
+}
