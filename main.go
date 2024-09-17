@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -28,8 +29,10 @@ var db *sql.DB
 var indexTmpl = template.Must(template.ParseFiles("templates/index.html"))
 var detailTmpl = template.Must(template.ParseFiles("templates/detail.html"))
 
+const pageSize = 12
+
 func main() {
-    fmt.Println("Initializing the database")
+	fmt.Println("Initializing the database")
 	var err error
 	db, err = sql.Open("sqlite3", "./thoughts.db")
 	if err != nil {
@@ -38,7 +41,7 @@ func main() {
 	defer db.Close()
 
 	createTable()
-    fmt.Println("Database initialized")
+	fmt.Println("Database initialized")
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", indexHandler)
@@ -48,13 +51,13 @@ func main() {
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	srv := &http.Server{
-		Handler: r,
-		Addr:    "127.0.0.1:8080",
+		Handler:      r,
+		Addr:         "127.0.0.1:8080",
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
 
-    fmt.Println("Server started on port 8080")
+	fmt.Println("Server started on port 8080")
 	log.Fatal(srv.ListenAndServe())
 }
 
@@ -69,7 +72,7 @@ func createTable() {
 		log.Fatal(err)
 	}
 
-    query = `
+	query = `
     CREATE TABLE IF NOT EXISTS comments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         text TEXT NOT NULL,
@@ -77,14 +80,22 @@ func createTable() {
         FOREIGN KEY (thoughtID) REFERENCES thoughts(id)
     );`
 
-    _, err = db.Exec(query)
-    if err != nil {
-        log.Fatal(err)
-    }
+	_, err = db.Exec(query)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Query("SELECT id, text FROM thoughts ORDER BY id DESC")
+	page := r.URL.Query().Get("page")
+	page = strings.TrimSpace(page)
+	pageNumber, err := strconv.Atoi(page)
+	if err != nil {
+		pageNumber = 1
+	}
+	offset := (pageNumber - 1) * pageSize
+
+	rows, err := db.Query("SELECT id, text FROM thoughts ORDER BY id DESC LIMIT ? OFFSET ?", pageSize, offset)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -101,7 +112,24 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		thoughts = append(thoughts, thought)
 	}
 
-	indexTmpl.Execute(w, thoughts)
+    totalRow := db.QueryRow("SELECT COUNT(*) FROM thoughts")
+    var total int
+    if err := totalRow.Scan(&total); err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+	indexTmpl.Execute(w, struct {
+		Thoughts    []Thought
+		CurrentPage int
+		TotalPages  int
+		Pages       []int
+	}{
+		Thoughts:    thoughts,
+		CurrentPage: pageNumber,
+		TotalPages:  total / pageSize,
+		Pages:       generatePages(total, pageSize, pageNumber),
+	})
 }
 
 func detailHandler(w http.ResponseWriter, r *http.Request) {
@@ -144,25 +172,25 @@ func detailHandler(w http.ResponseWriter, r *http.Request) {
 func commentHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-    if r.Method != http.MethodPost {
-        http.Redirect(w, r, fmt.Sprintf("/thought/%s", vars["id"]), http.StatusSeeOther)
-        return
-    }
+	if r.Method != http.MethodPost {
+		http.Redirect(w, r, fmt.Sprintf("/thought/%s", vars["id"]), http.StatusSeeOther)
+		return
+	}
 
-    text := r.FormValue("text")
-    text = strings.TrimSpace(text)
-    if text == "" {
-        http.Redirect(w, r, fmt.Sprintf("/thought/%s", vars["id"]), http.StatusSeeOther)
-        return
-    }
+	text := r.FormValue("text")
+	text = strings.TrimSpace(text)
+	if text == "" {
+		http.Redirect(w, r, fmt.Sprintf("/thought/%s", vars["id"]), http.StatusSeeOther)
+		return
+	}
 
-    _, err := db.Exec("INSERT INTO comments (text, thoughtID) VALUES (?, ?)", text, vars["id"])
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
-    }
+	_, err := db.Exec("INSERT INTO comments (text, thoughtID) VALUES (?, ?)", text, vars["id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-    http.Redirect(w, r, fmt.Sprintf("/thought/%s", vars["id"]), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/thought/%s", vars["id"]), http.StatusSeeOther)
 }
 
 func submitHandler(w http.ResponseWriter, r *http.Request) {
@@ -172,7 +200,7 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	text := r.FormValue("text")
-    text = strings.TrimSpace(text)
+	text = strings.TrimSpace(text)
 	if text == "" {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
@@ -185,4 +213,15 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+// show 5 pages before and after the current page
+func generatePages(total, pageSize, currentPage int) []int {
+    var pages []int
+    for i := currentPage - 5; i <= currentPage+5; i++ {
+        if i > 0 && i <= total/pageSize {
+            pages = append(pages, i)
+        }
+    }
+    return pages
 }
